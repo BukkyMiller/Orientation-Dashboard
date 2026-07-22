@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WGU Orientation Survey — Analysis of 3,115 Responses</title>
+<style>
+  :root{
+    --ink:#1c1c1a;
+    --ink-soft:#4a4a46;
+    --ink-mute:#8a8a84;
+    --paper:#ffffff;
+    --card:#fbfbf8;
+    --line:#e6e4dd;
+    --blue:#2b5fa8;
+    --blue-soft:#6e9fd4;
+    --red:#c0392b;
+    --red-soft:#e08f88;
+    --neutral:#dcd8d0;
+    --green:#1e7d4f;
+    --green-bg:#e8f4ec;
+    --serif:"Source Serif 4","Iowan Old Style",Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:720px;margin:0 auto;padding:64px 24px 80px}
+  .eyebrow{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:18px}
+  .eyebrow .dot{color:var(--ink-mute);font-weight:400;margin:0 4px}
+  h1{font-family:var(--serif);font-size:40px;line-height:1.15;font-weight:700;letter-spacing:-.01em;margin-bottom:16px}
+  .meta{font-size:13.5px;color:var(--ink-mute);margin-bottom:32px}
+  .meta strong{color:var(--ink-soft);font-weight:700}
+  .lede{font-size:16.5px;line-height:1.7;color:var(--ink-soft);margin-bottom:36px}
+  .lede strong{color:var(--ink)}
+  h2{font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:-.005em;margin:56px 0 12px}
+  .section-intro{color:var(--ink-soft);margin-bottom:22px}
+  .section-intro strong{color:var(--ink)}
+  .section-intro em{font-style:italic}
+
+  /* stat cards */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:8px 0 8px}
+  @media(max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:18px 16px}
+  .stat .label{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-mute);margin-bottom:8px;line-height:1.4}
+  .stat .num{font-size:30px;font-weight:800;line-height:1;letter-spacing:-.02em}
+  .stat .num small{font-size:15px;font-weight:600;color:var(--ink-mute)}
+  .stat .num.warn{color:var(--red)}
+  .stat .sub{font-size:12px;color:var(--ink-soft);margin-top:8px;line-height:1.45}
+
+  /* chart cards */
+  .chart-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:24px;margin:22px 0}
+  .chart-title{font-size:14.5px;font-weight:700;margin-bottom:4px}
+  .chart-sub{font-size:12.5px;color:var(--ink-mute);margin-bottom:20px}
+
+  /* diverging stacked bars */
+  .likert-row{display:grid;grid-template-columns:180px 1fr 46px;gap:14px;align-items:center;margin-bottom:16px}
+  @media(max-width:640px){.likert-row{grid-template-columns:1fr;gap:6px}.likert-total{text-align:left!important}}
+  .likert-label{font-size:12.5px;font-weight:600;line-height:1.35}
+  .likert-label .qn{display:block;font-weight:400;color:var(--ink-mute);font-size:11.5px;margin-top:2px}
+  .likert-bar{display:flex;height:26px;border-radius:4px;overflow:hidden}
+  .seg{position:relative;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;color:#fff;min-width:0;cursor:default}
+  .seg span{overflow:hidden;white-space:nowrap;padding:0 2px}
+  .seg.sd{background:var(--red)} .seg.d{background:var(--red-soft)}
+  .seg.n{background:var(--neutral);color:var(--ink-soft)}
+  .seg.a{background:var(--blue-soft)} .seg.sa{background:var(--blue)}
+  .seg:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:11px;font-weight:600;padding:5px 9px;border-radius:5px;white-space:nowrap;z-index:5;pointer-events:none}
+  .likert-total{font-size:13px;font-weight:800;text-align:right}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:18px;font-size:11.5px;color:var(--ink-soft)}
+  .legend .key{display:inline-flex;align-items:center;gap:6px}
+  .legend .sw{width:10px;height:10px;border-radius:2px;display:inline-block}
+
+  details.data-table{margin-top:16px;font-size:12.5px}
+  details.data-table summary{cursor:pointer;color:var(--ink-mute);font-weight:600}
+  details.data-table table{width:100%;border-collapse:collapse;margin-top:12px}
+  details.data-table th,details.data-table td{text-align:right;padding:6px 8px;border-bottom:1px solid var(--line);font-size:12px}
+  details.data-table th:first-child,details.data-table td:first-child{text-align:left}
+  details.data-table th{font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-mute)}
+
+  /* horizontal bars */
+  .hbar-row{display:grid;grid-template-columns:190px 1fr 90px;gap:14px;align-items:center;margin-bottom:13px}
+  @media(max-width:640px){.hbar-row{grid-template-columns:1fr;gap:4px}}
+  .hbar-label{font-size:12.5px;font-weight:600;line-height:1.35}
+  .hbar-track{height:20px;border-radius:4px;position:relative}
+  .hbar-fill{height:100%;border-radius:4px;background:var(--blue)}
+  .hbar-fill.neg{background:var(--red)}
+  .hbar-val{font-size:12.5px;font-weight:700;white-space:nowrap}
+  .hbar-val small{font-weight:500;color:var(--ink-mute)}
+  .footnote{font-size:11.5px;color:var(--ink-mute);margin-top:14px;line-height:1.5}
+
+  /* quotes */
+  .quote-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin:24px 0}
+  blockquote{font-family:var(--serif);font-style:italic;font-size:14px;line-height:1.6;color:var(--ink-soft);border-left:3px solid var(--blue);padding:2px 0 2px 14px}
+  blockquote.solo{margin:16px 0 4px}
+  blockquote.crit{border-left-color:var(--red)}
+
+  /* findings */
+  .finding{border-top:1px solid var(--line);padding:28px 0 30px}
+  .finding .f-eyebrow{font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}
+  .finding .f-eyebrow.blue{color:var(--blue)} .finding .f-eyebrow.red{color:var(--red)}
+  .finding h3{font-family:var(--serif);font-size:19.5px;font-weight:700;margin-bottom:12px;line-height:1.35}
+  .finding p{color:var(--ink-soft);margin-bottom:10px}
+  .finding p strong{color:var(--ink)}
+
+  /* bug table */
+  .bug-table{width:100%;border-collapse:collapse;margin-top:18px}
+  .bug-table th{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-mute);text-align:left;padding:8px 10px 8px 0;border-bottom:1px solid var(--line);font-weight:700}
+  .bug-table td{font-size:13px;padding:12px 10px 12px 0;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.5}
+  .bug-table td:first-child{font-weight:700;width:150px}
+  .bug-table td:nth-child(2){width:70px;color:var(--ink-soft)}
+  .bug-table td:last-child{color:var(--ink-soft)}
+
+  /* recommendations */
+  .rec-group-title{font-family:var(--serif);font-size:19px;font-weight:700;margin:30px 0 14px;display:flex;align-items:center;gap:10px}
+  .rec-group-title .rule{flex:1;height:1px;background:var(--line)}
+  .rec{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px 22px;margin-bottom:14px;display:grid;grid-template-columns:30px 1fr;gap:14px}
+  .rec .chip{width:26px;height:26px;border-radius:50%;background:#e7eef8;color:var(--blue);font-size:12.5px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px}
+  .rec.fixed .chip{background:var(--green-bg);color:var(--green)}
+  .rec h4{font-size:14.5px;font-weight:700;margin-bottom:6px;line-height:1.4;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+  .rec p{font-size:13.5px;color:var(--ink-soft);line-height:1.6}
+  .badge-fixed{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--green);background:var(--green-bg);border:1px solid #bfe0cc;border-radius:99px;padding:2px 10px}
+
+  /* method */
+  .method p{font-size:13.5px;color:var(--ink-soft);margin-bottom:14px}
+  .method p strong{color:var(--ink)}
+  footer{border-top:1px solid var(--line);margin-top:56px;padding-top:18px;font-size:12px;color:var(--ink-mute)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">Survey Analysis <span class="dot">·</span> Studio Results Export <span class="dot">·</span> July 21, 2026</div>
+  <h1>New-student orientation is landing well — length, AI overload, and a save-progress bug are the drags</h1>
+  <p class="meta"><strong>3,115 responses</strong> · collected July 16–21, 2026 · WGU online orientation · 13 questions (7 rating scales, 1 multi-select, 5 open-text; ~5,770 substantive written answers analyzed)</p>
+
+  <p class="lede">Students rate the orientation <strong>4.3 / 5 overall</strong>, and 9 in 10 leave feeling prepared, supported, and clear on the content. The self-paced format is the single most-praised design choice. The weak spots are just as consistent: the experience runs <strong>long and repetitive</strong> (its lowest-scoring item and its most common written complaint), the AI content and AI grader polarize, experienced students want a shorter track — and a cluster of <strong>progress-saving bugs</strong> is generating the angriest feedback and blocking a small number of students from finishing at all.</p>
+
+  <div class="stats">
+    <div class="stat"><div class="label">Overall Rating</div><div class="num">4.34<small>/5</small></div><div class="sub">87% Good or Excellent · 1% negative</div></div>
+    <div class="stat"><div class="label">Feel Prepared to Start</div><div class="num">92%</div><div class="sub">agree or strongly agree (Q9)</div></div>
+    <div class="stat"><div class="label">Know Where to Get Support</div><div class="num">96%</div><div class="sub">the strongest outcome (Q10)</div></div>
+    <div class="stat"><div class="label">Length Felt Appropriate</div><div class="num warn">74%</div><div class="sub">the weakest item — 26% neutral or disagree (Q2)</div></div>
+  </div>
+
+  <h2>The scores: uniformly strong, with one soft spot</h2>
+  <p class="section-intro">Six agreement items, sorted by agreement. Everything clears 85% except <strong>length</strong> (74%) — and length is also the item most correlated with the overall rating (r&nbsp;=&nbsp;0.51), so it isn't a cosmetic complaint. <strong>Belonging</strong> (86%) is solid but has the largest neutral block: 13% of new students don't yet feel connected to WGU.</p>
+
+  <div class="chart-card">
+    <div class="chart-title">Agreement by statement</div>
+    <div class="chart-sub">Share of respondents per answer, left = strongly disagree → right = strongly agree. Hover a segment for counts.</div>
+
+    <div class="likert-row">
+      <div class="likert-label">I know where to go for academic support<span class="qn">Q10 · n = 2,939</span></div>
+      <div class="likert-bar">
+        <div class="seg sd" style="width:.5%" data-tip="Strongly disagree — 16 (0.5%)"></div>
+        <div class="seg d" style="width:.3%" data-tip="Disagree — 8 (0.3%)"></div>
+        <div class="seg n" style="width:2.7%" data-tip="Neither — 80 (2.7%)"></div>
+        <div class="seg a" style="width:51.9%" data-tip="Agree — 1,526 (51.9%)"><span>52%</span></div>
+        <div class="seg sa" style="width:44.5%" data-tip="Strongly agree — 1,309 (44.5%)"><span>45%</span></div>
+      </div>
+      <div class="likert-total">96%</div>
+    </div>
+
+    <div class="likert-row">
+      <div class="likert-label">Online format let me go at my own pace<span class="qn">Q3 · n = 2,913</span></div>
+      <div class="likert-bar">
+        <div class="seg sd" style="width:1.3%" data-tip="Strongly disagree — 37 (1.3%)"></div>
+        <div class="seg d" style="width:.7%" data-tip="Disagree — 19 (0.7%)"></div>
+        <div class="seg n" style="width:4.2%" data-tip="Neither — 122 (4.2%)"></div>
+        <div class="seg a" style="width:48.8%" data-tip="Agree — 1,423 (48.8%)"><span>49%</span></div>
+        <div class="seg sa" style="width:45%" data-tip="Strongly agree — 1,312 (45.0%)"><span>45%</span></div>
+      </div>
+      <div class="likert-total">94%</div>
+    </div>
+
+    <div class="likert-row">
+      <div class="likert-label">I feel prepared to begin my studies<span class="qn">Q9 · n = 2,948</span></div>
+      <div class="likert-bar">
+        <div class="seg sd" style="width:.6%" data-tip="Strongly disagree — 19 (0.6%)"></div>
+        <div class="seg d" style="width:.6%" data-tip="Disagree — 17 (0.6%)"></div>
+        <div class="seg n" style="width:6.4%" data-tip="Neither — 189 (6.4%)"></div>
+        <div class="seg a" style="width:53.8%" data-tip="Agree — 1,586 (53.8%)"><span>54%</span></div>
+        <div class="seg sa" style="width:38.6%" data-tip="Strongly agree — 1,137 (38.6%)"><span>39%</span></div>
+      </div>
+      <div class="likert-total">92%</div>
+    </div>
+
+    <div class="likert-row">
+      <div class="likert-label">Module content was clear<span class="qn">Q6 · n = 2,847</span></div>
+      <div class="likert-bar">
+        <div class="seg sd" style="width:1.3%" data-tip="Strongly disagree — 36 (1.3%)"></div>
+        <div class="seg d" style="width:.7%" data-tip="Disagree — 19 (0.7%)"></div>
+        <div class="seg n" style="width:6.1%" data-tip="Neither — 174 (6.1%)"></div>
+        <div class="seg a" style="width:55.6%" data-tip="Agree — 1,582 (55.6%)"><span>56%</span></div>
+        <div class="seg sa" style="width:36.4%" data-tip="Strongly agree — 1,036 (36.4%)"><span>36%</span></div>
+      </div>
+      <div class="likert-total">92%</div>
+    </div>
+
+    <div class="likert-row">
+      <div class="likert-label">I feel a sense of belonging at WGU<span class="qn">Q11 · n = 2,952</span></div>
+      <div class="likert-bar">
+        <div class="seg sd" style="width:.5%" data-tip="Strongly disagree — 14 (0.5%)"></div>
+        <div class="seg d" style="width:.6%" data-tip="Disagree — 18 (0.6%)"></div>
+        <div class="seg n" style="width:13%" data-tip="Neither — 385 (13.0%)"><span>13%</span></div>
+        <div class="seg a" style="width:50.9%" data-tip="Agree — 1,502 (50.9%)"><span>51%</span></div>
+        <div class="seg sa" style="width:35%" data-tip="Strongly agree — 1,033 (35.0%)"><span>35%</span></div>
+      </div>
+      <div class="likert-total">86%</div>
+    </div>
+
+    <div class="likert-row">
+      <div class="likert-label">The orientation was an appropriate length<span class="qn">Q2 · n = 2,921</span></div>
+      <div class="likert-bar">
+        <div class="seg sd" style="width:1.8%" data-tip="Strongly disagree — 54 (1.8%)"></div>
+        <div class="seg d" style="width:5.1%" data-tip="Disagree — 149 (5.1%)"><span>5%</span></div>
+        <div class="seg n" style="width:19%" data-tip="Neither — 555 (19.0%)"><span>19%</span></div>
+        <div class="seg a" style="width:52.1%" data-tip="Agree — 1,522 (52.1%)"><span>52%</span></div>
+        <div class="seg sa" style="width:21.9%" data-tip="Strongly agree — 641 (21.9%)"><span>22%</span></div>
+      </div>
+      <div class="likert-total">74%</div>
+    </div>
+
+    <div class="legend">
+      <span class="key"><span class="sw" style="background:var(--red)"></span>Strongly disagree</span>
+      <span class="key"><span class="sw" style="background:var(--red-soft)"></span>Disagree</span>
+      <span class="key"><span class="sw" style="background:var(--neutral)"></span>Neither</span>
+      <span class="key"><span class="sw" style="background:var(--blue-soft)"></span>Agree</span>
+      <span class="key"><span class="sw" style="background:var(--blue)"></span>Strongly agree</span>
+    </div>
+
+    <details class="data-table">
+      <summary>Data table (all six items + overall rating)</summary>
+      <table>
+        <tr><th>Item</th><th>n</th><th>Mean</th><th>SD¹</th><th>D</th><th>Neither</th><th>A</th><th>SA</th><th>Top-2</th></tr>
+        <tr><td>Q10 · Know where to go for academic support</td><td>2,939</td><td>4.40</td><td>16</td><td>8</td><td>80</td><td>1,526</td><td>1,309</td><td>96%</td></tr>
+        <tr><td>Q3 · Online format let me go at my own pace</td><td>2,913</td><td>4.36</td><td>37</td><td>19</td><td>122</td><td>1,423</td><td>1,312</td><td>94%</td></tr>
+        <tr><td>Q9 · Feel prepared to begin my studies</td><td>2,948</td><td>4.29</td><td>19</td><td>17</td><td>189</td><td>1,586</td><td>1,137</td><td>92%</td></tr>
+        <tr><td>Q6 · Module content was clear</td><td>2,847</td><td>4.25</td><td>36</td><td>19</td><td>174</td><td>1,582</td><td>1,036</td><td>92%</td></tr>
+        <tr><td>Q11 · Feel a sense of belonging at WGU</td><td>2,952</td><td>4.19</td><td>14</td><td>18</td><td>385</td><td>1,502</td><td>1,033</td><td>86%</td></tr>
+        <tr><td>Q2 · Appropriate length</td><td>2,921</td><td>3.87</td><td>54</td><td>149</td><td>555</td><td>1,522</td><td>641</td><td>74%</td></tr>
+        <tr><td>Q1 · Overall rating (Awful→Excellent)</td><td>2,929</td><td>4.34</td><td>11</td><td>22</td><td>350</td><td>1,129</td><td>1,417</td><td>87%</td></tr>
+      </table>
+      <p class="footnote">¹ SD/D/A/SA = strongly disagree / disagree / agree / strongly agree counts. Q1 columns map the Awful→Excellent scale onto the same five-point display.</p>
+    </details>
+  </div>
+
+  <h2>Which modules students valued</h2>
+  <p class="section-intro">Multi-select, 2,859 respondents chose at least one module (mean 2.8 selections). <strong>Campus resources</strong> is the clear winner — consistent with the open-text answers, where discovering WGU's support ecosystem is the single most-mentioned thing students enjoyed. <strong>Financial aid</strong> trails at 26%, yet financial-aid detail also shows up as a <em>requested</em> topic — the module may be underpowered rather than unwanted.</p>
+
+  <div class="chart-card">
+    <div class="chart-title">"Which modules did you find most valuable?"</div>
+    <div class="chart-sub">Percent of the 2,859 respondents who selected each module.</div>
+    <div class="hbar-row"><div class="hbar-label">Campus resources &amp; support services</div><div class="hbar-track"><div class="hbar-fill" style="width:71%"></div></div><div class="hbar-val">71% <small>· 2,021</small></div></div>
+    <div class="hbar-row"><div class="hbar-label">Academic policies &amp; expectations</div><div class="hbar-track"><div class="hbar-fill" style="width:57%"></div></div><div class="hbar-val">57% <small>· 1,621</small></div></div>
+    <div class="hbar-row"><div class="hbar-label">Technology &amp; systems</div><div class="hbar-track"><div class="hbar-fill" style="width:47%"></div></div><div class="hbar-val">47% <small>· 1,349</small></div></div>
+    <div class="hbar-row"><div class="hbar-label">Student life &amp; community</div><div class="hbar-track"><div class="hbar-fill" style="width:45%"></div></div><div class="hbar-val">45% <small>· 1,291</small></div></div>
+    <div class="hbar-row"><div class="hbar-label">Health &amp; wellness</div><div class="hbar-track"><div class="hbar-fill" style="width:36%"></div></div><div class="hbar-val">36% <small>· 1,041</small></div></div>
+    <div class="hbar-row"><div class="hbar-label">Financial aid &amp; tuition</div><div class="hbar-track"><div class="hbar-fill" style="width:26%"></div></div><div class="hbar-val">26% <small>· 730</small></div></div>
+  </div>
+
+  <h2>What students loved</h2>
+  <p class="section-intro">2,388 substantive answers to "What did you enjoy most?" — every answer was read and theme-coded. Counts below are conservative keyword-matched mentions (answers often touch several themes).</p>
+
+  <div class="chart-card">
+    <div class="chart-title">Most-mentioned highlights</div>
+    <div class="chart-sub">Mentions among 2,388 written answers.</div>
+    <div class="hbar-row"><div class="hbar-label">Discovering resources &amp; support services</div><div class="hbar-track"><div class="hbar-fill" style="width:100%"></div></div><div class="hbar-val">442</div></div>
+    <div class="hbar-row"><div class="hbar-label">Interactivity — quizzes, flip cards, scenarios</div><div class="hbar-track"><div class="hbar-fill" style="width:55%"></div></div><div class="hbar-val">244</div></div>
+    <div class="hbar-row"><div class="hbar-label">Student &amp; alumni story videos</div><div class="hbar-track"><div class="hbar-fill" style="width:54%"></div></div><div class="hbar-val">237</div></div>
+    <div class="hbar-row"><div class="hbar-label">Clear structure, layout &amp; navigation</div><div class="hbar-track"><div class="hbar-fill" style="width:49%"></div></div><div class="hbar-val">218</div></div>
+    <div class="hbar-row"><div class="hbar-label">Self-paced format, progress saved</div><div class="hbar-track"><div class="hbar-fill" style="width:48%"></div></div><div class="hbar-val">213</div></div>
+    <div class="hbar-row"><div class="hbar-label">Knowing what to expect (CBE model, "orientation as a class")</div><div class="hbar-track"><div class="hbar-fill" style="width:22%"></div></div><div class="hbar-val">97</div></div>
+    <div class="hbar-row"><div class="hbar-label">Instant AI feedback on written answers</div><div class="hbar-track"><div class="hbar-fill" style="width:21%"></div></div><div class="hbar-val">91</div></div>
+    <p class="footnote">Counts are keyword-verified floors; true prevalence is somewhat higher.</p>
+  </div>
+
+  <div class="quote-grid">
+    <blockquote>"It would come right back to where you left off when you had another bit of time to put towards it. I think this was a good warm up for what studying under WGU will be like."</blockquote>
+    <blockquote>"I liked how interactive it was, usually online orientations are just readings."</blockquote>
+    <blockquote>"I appreciate how the orientation is modeled as a class, so I have an idea of what is to come as my first term begins."</blockquote>
+    <blockquote>"Orientation answered those questions, eased my anxiety, and replaced uncertainty with a clear path forward."</blockquote>
+  </div>
+
+  <h2>The complaint landscape</h2>
+  <p class="section-intro">Across the four critical-feedback questions (Q7, Q8, Q12, Q13; ~3,380 substantive answers), the same handful of issues recur. About half of Q7/Q12/Q13 answers are "no issues" — the counts below are the substantive remainder, keyword-verified as conservative floors.</p>
+
+  <div class="chart-card">
+    <div class="chart-title">Top issues by explicit mentions</div>
+    <div class="chart-sub">Conservative keyword-matched counts across all open-text fields.</div>
+    <div class="hbar-row"><div class="hbar-label">Too long / repetitive / "cut the fluff"</div><div class="hbar-track"><div class="hbar-fill neg" style="width:100%"></div></div><div class="hbar-val">226</div></div>
+    <div class="hbar-row"><div class="hbar-label">AI content concerns (Module 3, forced use, grader)</div><div class="hbar-track"><div class="hbar-fill neg" style="width:63%"></div></div><div class="hbar-val">143</div></div>
+    <div class="hbar-row"><div class="hbar-label">Assessment &amp; proctoring unknowns</div><div class="hbar-track"><div class="hbar-fill neg" style="width:42%"></div></div><div class="hbar-val">95</div></div>
+    <div class="hbar-row"><div class="hbar-label">Portal / dashboard navigation gaps</div><div class="hbar-track"><div class="hbar-fill neg" style="width:35%"></div></div><div class="hbar-val">78</div></div>
+    <div class="hbar-row"><div class="hbar-label">"Show me a real course" requests</div><div class="hbar-track"><div class="hbar-fill neg" style="width:25%"></div></div><div class="hbar-val">57</div></div>
+    <div class="hbar-row"><div class="hbar-label">Progress lost / not saving / app–web sync</div><div class="hbar-track"><div class="hbar-fill neg" style="width:17%"></div></div><div class="hbar-val">38</div></div>
+    <div class="hbar-row"><div class="hbar-label">Can't find the Personalized Learning Guide</div><div class="hbar-track"><div class="hbar-fill neg" style="width:13%"></div></div><div class="hbar-val">30</div></div>
+    <div class="hbar-row"><div class="hbar-label">Not tailored for grad / experienced students</div><div class="hbar-track"><div class="hbar-fill neg" style="width:8%"></div></div><div class="hbar-val">18</div></div>
+    <p class="footnote">Red = issues; bars scaled to the largest count. Themes overlap — one answer can appear in several rows.</p>
+  </div>
+
+  <h2>Six findings that matter</h2>
+
+  <div class="finding">
+    <div class="f-eyebrow red">Finding 1 · Length</div>
+    <h3>Length is the one thing dragging the score — and the time estimate makes it worse</h3>
+    <p>Length is the lowest-scoring item (74% agreement) and the most common written complaint (226+ mentions). It's also the item most correlated with the overall rating (r&nbsp;=&nbsp;0.51). The 203 students who disagreed on length rate the orientation <strong>3.53 vs the 4.34 average</strong>. A recurring aggravator: students report being told to budget 2–2.5 hours and spending 5–7. The named culprits are consistent — <strong>Module 3's AI sections</strong> (three submodules "that should be one"), <strong>Module 2's learning-profile work</strong>, and near-duplicate content across <strong>Modules 4 and 5</strong>.</p>
+    <blockquote class="solo crit">"I was told to set aside 2-2.5 hours to complete orientation, and I think it took me around 5 hours, and that was with speed reading."</blockquote>
+  </div>
+
+  <div class="finding">
+    <div class="f-eyebrow blue">Finding 2 · AI</div>
+    <h3>AI is the most polarizing design choice in the product</h3>
+    <p>The same feature earns love and fury. 91+ students name the instant AI feedback as their favorite thing — it "helped me think more critically… letting me iterate." But 143+ complaints target the AI experience: Module 3 over-weights AI content (77 name it directly), the grader enforces <strong>hidden criteria</strong> ("it referenced a rubric that was not present in the question"), resubmitting <strong>wipes the previous answer</strong>, and a vocal group objects to being <strong>forced to use AI at all</strong> — some on ethical grounds, with ~10 explicitly requesting an opt-out. Several practice chatbots also simply failed to respond, then the grader penalized students for "not chatting enough."</p>
+    <blockquote class="solo crit">"For the AI section, you need to allow the fact that people refuse to use AI for school as an answer."</blockquote>
+  </div>
+
+  <div class="finding">
+    <div class="f-eyebrow blue">Finding 3 · Content Gap</div>
+    <h3>The biggest unmet need: show me what a real course looks like</h3>
+    <p>In both "what was missing?" (Q8) and "what's still unclear?" (Q12), the dominant substantive theme — roughly one in eight answers — is the same: students finish orientation still unable to picture <strong>the day-to-day of an actual course</strong>. They ask for a sample course, a mock assessment, a syllabus, a portal walkthrough, a first-week checklist. Related unknowns cluster around <strong>proctored assessments</strong> (95+ asks: format, retakes, webcam setup) and <strong>acceleration mechanics</strong> — ironic given self-pacing is WGU's headline promise.</p>
+    <blockquote class="solo">"I'm still not exactly sure how the courses work. I don't know what it will look like when I begin my first course or how I will navigate finding the assignments, assessments, etc."</blockquote>
+  </div>
+
+  <div class="finding">
+    <div class="f-eyebrow blue">Finding 4 · Belonging</div>
+    <h3>Belonging is the softest outcome — and it moves with preparedness</h3>
+    <p>Belonging (Q11) has the largest neutral block of any item: 13% of students sit on the fence. It correlates strongly with feeling prepared (r&nbsp;=&nbsp;0.68), and knowing where to get support is the single strongest correlate of preparedness (r&nbsp;=&nbsp;0.74) — the support-ecosystem content is doing real work. What builds belonging in the verbatims is specific: <strong>alumni story videos</strong> (237+ mentions — "not alone despite WGU being online-only") and reflection exercises. A small tail (~1.5%) still worries online learning will be isolating.</p>
+  </div>
+
+  <div class="finding">
+    <div class="f-eyebrow blue">Finding 5 · Audience Fit</div>
+    <h3>Experienced students are the unhappiest segment</h3>
+    <p>Only 33 students rated the experience negatively overall — but their verbatims cluster hard: graduate students, degree-holders, and returning professionals who found goal-setting and study-skills content "geared toward people who are brand new to college," even "demeaning." Their consistent ask is a <strong>shorter, test-out or fast-track version</strong> for students with prior degrees, plus program-specific content ("Please build a separate orientation module for each specific program").</p>
+    <blockquote class="solo">"It would be nice to have two different orientations - a more lengthy one for those who are new to college and a much shorter, more concise version for those who already have college degrees."</blockquote>
+  </div>
+
+  <div class="finding">
+    <div class="f-eyebrow red">Finding 6 · Product Bugs</div>
+    <h3>A cluster of platform bugs is producing the angriest feedback — and blocking completions</h3>
+    <p>Bug reports surface in every question, including "what did you enjoy most." The most serious: <strong>progress and typed answers lost</strong> on logout or device switch (38+ explicit reports; the mobile app doesn't sync to the web), forcing students to redo modules two to four times. Several report being unable to <em>pass</em> orientation at all — with downstream enrollment effects ("told simultaneously complete and not started by IT vs my enrollment counselor"). One student named the platform directly: "Wonderful content, the lazuli platform needs a lot of improvement."</p>
+    <table class="bug-table">
+      <tr><th>Bug</th><th>Reports</th><th>Detail</th></tr>
+      <tr><td>Progress / answers not saving</td><td>38+</td><td>Lost on logout, browser close, or app↔web switch; students redo modules 2–4×; some show "Not Passed" despite completion.</td></tr>
+      <tr><td>"My WGU Story" entry #2</td><td>~9–10</td><td>Saved answer doesn't populate into the compiled Module 6.4 document; reported near-verbatim by independent students. Looks reproducible.</td></tr>
+      <tr><td>PLG unfindable</td><td>30+</td><td>Instructions say it's "on your Orientation Course of Study" — no link exists; the help bot can't locate it either. Also: no PDF download though the exercise requires one; crashes on Firefox.</td></tr>
+      <tr><td>Module 6.1 "Trail Markers" links</td><td>15+</td><td>Degree-plan link dead-ends at a video/placeholder (School of Business page repeatedly named), making the goal-setting activity unanswerable.</td></tr>
+      <tr><td>Practice chatbots unresponsive</td><td>~4–15</td><td>Roleplay chats stop replying; the grader then flags students for insufficient conversation.</td></tr>
+      <tr><td>Resubmit wipes answers</td><td>~5</td><td>The only edit path is "reset all prompts"; long answers deleted on regrade — source of the angriest single responses.</td></tr>
+      <tr><td>Misc UI</td><td>~10</td><td>Dark-mode black-on-navy text, mobile response boxes cut off, wrong unit numbers in Module 3, alleged answer-key error in 5.4 (peer vs academic coach), this survey itself resubmitting.</td></tr>
+    </table>
+  </div>
+
+  <h2>Recommendations</h2>
+  <p class="section-intro">Ordered by expected impact against effort, from the evidence above — grouped by owner.</p>
+
+  <div class="rec-group-title">Course Design Related Issues <span class="rule"></span></div>
+
+  <div class="rec">
+    <div class="chip">1</div>
+    <div>
+      <h4>Cut 30–40% of runtime: collapse Module 3's AI sections to one, merge Modules 4+5, trim reflections.</h4>
+      <p>Targets the lowest-scoring item and #1 complaint. Then publish an honest time estimate — the 2.5-vs-6-hour gap is a trust problem, not just a length problem.</p>
+    </div>
+  </div>
+
+  <div class="rec">
+    <div class="chip">2</div>
+    <div>
+      <h4>Add a "your first course" sample module.</h4>
+      <p>A mock course with a practice assessment, portal walkthrough, and first-week checklist answers the single biggest ask across Q8 and Q12 — and would convert the 6% preparedness fence-sitters.</p>
+    </div>
+  </div>
+
+  <div class="rec">
+    <div class="chip">3</div>
+    <div>
+      <h4>Offer a fast track for experienced students.</h4>
+      <p>A test-out or condensed path for degree-holders defuses the most negative segment; program-specific inserts (and fixing the School of Business placeholder) address the "too generic" thread.</p>
+    </div>
+  </div>
+
+  <div class="rec">
+    <div class="chip">4</div>
+    <div>
+      <h4>Make the AI grader show its rubric — and add an opt-out path.</h4>
+      <p>State the criteria ("give 2–3 examples") in the prompt, accept "I choose not to use AI" as a valid answer, and never penalize students for a chatbot that failed to respond.</p>
+    </div>
+  </div>
+
+  <div class="rec-group-title">Lazuli App Related Issues <span class="rule"></span></div>
+
+  <div class="rec fixed">
+    <div class="chip">✓</div>
+    <div>
+      <h4>Fix the save/sync cluster first <span class="badge-fixed">Fixed</span></h4>
+      <p>Progress persistence, app↔web parity, entry #2 compilation, and non-destructive resubmission. It's the difference between the most-praised feature ("it saved my spot") and the angriest feedback — and it was blocking real enrollments.</p>
+    </div>
+  </div>
+
+  <div class="rec fixed">
+    <div class="chip">✓</div>
+    <div>
+      <h4>Student progress tracking <span class="badge-fixed">Fixed</span></h4>
+      <p>A cluster of platform bugs was producing the angriest feedback — and blocking completions. Bug reports surfaced in every question, including "what did you enjoy most." The most serious: progress and typed answers lost on logout or device switch.</p>
+    </div>
+  </div>
+
+  <h2>Method &amp; caveats</h2>
+  <div class="method">
+    <p><strong>Data.</strong> 3,115 survey submissions exported July 21, 2026 (responses July 16–21). Rating items answered by 2,847–2,952 respondents; 186 skipped the first section entirely (143 of those still answered the preparedness section — the survey allows partial completion). Daily mean ratings were stable (4.32–4.41), so pooling across days is sound.</p>
+    <p><strong>Open text.</strong> ~5,770 substantive written answers after filtering empties and "no/none/n-a" variants. All were read in full and theme-coded (one coding pass per question), then every headline theme was verified with keyword matching against the raw data — the counts shown are those conservative floors, so true prevalence is somewhat higher. Themes overlap; shares don't sum to 100%.</p>
+    <p><strong>Caveats.</strong> A noticeable minority of long answers appear AI-drafted (near-identical templates; one student pasted a chatbot's suggested answer verbatim), which likely inflates polished themes like "more real-life examples" and deflates nothing critical. Roughly ten junk/test entries ("xxx", "I am testing this form") were ignored. Q1 uses an Awful→Excellent scale, mapped onto the same five-point display as the agreement items in the data table. Correlations are Pearson r on pairwise-complete responses (n ≈ 2,800–2,920); they indicate association, not causation.</p>
+  </div>
+
+  <footer>Analysis of the studio survey export studio_results_20260721_1734.csv · 3,115 responses · prepared July 21, 2026.</footer>
+
+</div>
+</body>
+</html>
